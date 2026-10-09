@@ -1,0 +1,35 @@
+# LAN-only HTTPS: no automatic OS trust, public ACME, or HTTP redirect listener.
+{
+	admin off
+	persist_config off
+	skip_install_trust
+	auto_https disable_redirects
+	storage file_system "{$EMBER_CADDY_DATA}"
+	pki {
+		ca local {
+			name "Ember LAN Test CA"
+			root_cn "Ember LAN Test Root CA"
+			intermediate_cn "Ember LAN Test Intermediate CA"
+		}
+	}
+}
+https://{$EMBER_HOST}:8443 {
+	bind {$EMBER_HOST}
+	tls internal
+	encode gzip
+	header {
+		X-Content-Type-Options nosniff
+		Referrer-Policy no-referrer
+		Permissions-Policy "camera=(self), microphone=(), geolocation=()"
+		Content-Security-Policy "default-src 'self'; script-src 'self' https://oapi.map.naver.com https://ssl.pstatic.net https://maps.pstatic.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.pstatic.net https://*.naver.com https://*.naver.net; connect-src 'self' https: ws: wss:; media-src 'self' blob: https:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'"
+	}
+	@api path /api/* /health/*
+	handle @api {
+		reverse_proxy 127.0.0.1:8000
+	}
+	handle {
+		root * "{$EMBER_WEB_ROOT}"
+		try_files {path} /index.html
+		file_server
+	}
+}

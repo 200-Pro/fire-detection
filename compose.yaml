@@ -1,0 +1,53 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: ember
+      POSTGRES_USER: ember
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+    volumes: ["postgres-data:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ember -d ember"]
+      interval: 5s
+      retries: 12
+    restart: unless-stopped
+  api:
+    build: {context: ., dockerfile: backend/Dockerfile}
+    environment:
+      EMBER_DATABASE_URL: postgresql+psycopg://ember:${POSTGRES_PASSWORD}@postgres:5432/ember
+      EMBER_ENVIRONMENT: ${EMBER_ENVIRONMENT:-development}
+      EMBER_ADMIN_PASSWORD: ${EMBER_ADMIN_PASSWORD:?Set EMBER_ADMIN_PASSWORD in .env}
+      EMBER_PUBLIC_ORIGIN: ${EMBER_PUBLIC_ORIGIN:-http://localhost:8080}
+      EMBER_SECURE_COOKIE: ${EMBER_SECURE_COOKIE:-false}
+      EMBER_DEMO_ENABLED: ${EMBER_DEMO_ENABLED:-true}
+      EMBER_MODEL_PATH: /service/models/best.pt
+      EMBER_POLICY_PATH: /service/models/fire_policy_v1.json
+      EMBER_STORAGE_PATH: /service/runtime/evidence
+      EMBER_SPREAD_DATA_PATH: /service/runtime/spread-data
+      EMBER_SPREAD_JOBS_PATH: /service/runtime/spread-jobs
+      KMA_SERVICE_KEY: ${KMA_SERVICE_KEY:-}
+      NIFOS_SERVICE_KEY: ${NIFOS_SERVICE_KEY:-}
+      NAVER_MAPS_CLIENT_ID: ${NAVER_MAPS_CLIENT_ID:-}
+      NAVER_MAPS_CLIENT_SECRET: ${NAVER_MAPS_CLIENT_SECRET:-}
+      ITS_API_KEY: ${ITS_API_KEY:-}
+      EMBER_CCTV_AI_APPROVED: ${EMBER_CCTV_AI_APPROVED:-false}
+      EMBER_STREAM_ALLOWED_HOSTS: ${EMBER_STREAM_ALLOWED_HOSTS:-}
+      EMBER_MONITOR_CAPACITY: ${EMBER_MONITOR_CAPACITY:-4}
+    volumes:
+      - "./models/best.pt:/service/models/best.pt:ro"
+      - "./models/fire_policy_v1.json:/service/models/fire_policy_v1.json:ro"
+      - "evidence-data:/service/runtime"
+      - "./runtime/spread-data:/service/runtime/spread-data:ro"
+      - "spread-jobs:/service/runtime/spread-jobs"
+    command: ["sh", "-c", "alembic upgrade head && exec uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 1 --no-access-log"]
+    depends_on: {postgres: {condition: service_healthy}}
+    restart: unless-stopped
+  web:
+    build: {context: ., dockerfile: frontend/Dockerfile}
+    ports: ["127.0.0.1:8080:80"]
+    depends_on: {api: {condition: service_healthy}}
+    restart: unless-stopped
+volumes:
+  postgres-data:
+  evidence-data:
+  spread-jobs:

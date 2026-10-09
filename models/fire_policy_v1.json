@@ -1,0 +1,22 @@
+{
+  "version": "fire-policy-v1",
+  "model_sha256": "57c133a489976dc2f7341381b12cf160622e0bbaff33aeffdee4926e2093611d",
+  "source_predictions_sha256": "25f90defc6f09ecf035437d3f43b8d755b8b4c266de273858502441ecb3f7c4a",
+  "raw_predict": {"conf": 0.05, "iou": 0.7, "imgsz": 640, "rect": false, "max_det": 300},
+  "filter": {
+    "strong_conf": 0.25,
+    "weak_conf": 0.22,
+    "weak_support": "near_strong_fire",
+    "support_radius": 0.4,
+    "duplicate_iou": 0.45,
+    "smoke_conf": 0.25
+  },
+  "validation": {
+    "source": "saved_colab_validation_predictions",
+    "images": 3445,
+    "candidate_count": 309,
+    "baseline": {"tp": 1514, "fp": 870, "fn": 640, "no_fire_image_alarm_fp": 34},
+    "candidate": {"tp": 1516, "fp": 738, "fn": 638, "no_fire_image_alarm_fp": 34},
+    "limitations": "Reduced box FP; fire-absent-image false alarms unchanged. Not independently tested on real CCTV. No retraining or test evaluation."
+  }
+}
