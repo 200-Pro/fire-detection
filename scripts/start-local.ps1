@@ -32,6 +32,8 @@ $previousHost = $env:EMBER_HOST
 $previousCaddy = $env:EMBER_CADDY_DATA
 $previousWeb = $env:EMBER_WEB_ROOT
 try {
+    Push-Location (Join-Path $projectRoot 'backend')
+    try { & $pythonPath -m alembic upgrade head; if ($LASTEXITCODE -ne 0) { throw 'Database migration failed; server not started.' } } finally { Pop-Location }
     if ($LanAddress) { $env:EMBER_PUBLIC_ORIGIN = "https://${LanAddress}:8443" }
     Start-Tracked 'backend' $pythonPath '-m uvicorn app.main:app --host 127.0.0.1 --port 8000 --workers 1 --no-access-log' (Join-Path $projectRoot 'backend')
     Start-Tracked 'frontend' $nodePath ('"{0}" --host 127.0.0.1 --port 5173 --strictPort' -f $vitePath) (Join-Path $projectRoot 'frontend')

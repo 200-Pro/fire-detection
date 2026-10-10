@@ -3,6 +3,7 @@ from concurrent.futures import ThreadPoolExecutor
 from contextlib import asynccontextmanager
 from datetime import timedelta
 import logging
+import hashlib
 import secrets
 import time
 from urllib.parse import urlparse
@@ -20,7 +21,7 @@ from .storage import EvidenceStore
 from .spread.routes import register_spread_routes
 from .providers import register_provider_routes
 from .monitoring import register_monitor_routes, apply_rules, filtered_preview
-from .models import Monitor
+from .models import Monitor, MonitorTrial
 
 log = logging.getLogger("ember")
 
@@ -107,7 +108,7 @@ def create_app(settings=None, detector=None):
 
     def owned_camera(db, camera_id, owner):
         camera = db.get(Camera, camera_id)
-        if not camera or camera.owner_id != owner.id:
+        if not camera or camera.owner_id != owner.id or camera.archived_at is not None:
             raise HTTPException(404, "카메라를 찾을 수 없습니다.")
         return camera
 
@@ -126,18 +127,35 @@ def create_app(settings=None, detector=None):
 
     def camera_data(camera):
         age = (utcnow()-aware(camera.last_seen)).total_seconds() if camera.last_seen else 1e12
-        online = camera.enabled and age < 12
+        state=monitoring.states.get(camera.id,{}) if camera.kind=='its' else {}
+        if camera.kind=='its':
+            with sessions() as db:
+                configured=db.get(Monitor,camera.id)
+                if not configured or not configured.enabled:
+                    state={'state':'stopped','message':'상시 분석 중지 · 공공 CCTV에서 감시 시험을 시작하세요.'}
+        online = camera.enabled and age < (30 if camera.kind=='its' else 12)
+        if state.get('state') in ('backoff','stale','stopped','capacity_blocked','approval_required'):
+            online=False
+        cached=previews.get(camera.id)
+        has_preview=cached is not None and time.monotonic()-cached[0]<300
         return {"id":camera.id,"name":camera.name,"location":camera.location,"kind":camera.kind,
                 "enabled":camera.enabled,"online":online,"signal":camera.last_signal if online else "offline",
                 "last_seen":aware(camera.last_seen).isoformat() if camera.last_seen else None,
                 "frames":camera.frames,"latency_ms":camera.latency_ms,
-                "preview_url":f"/api/cameras/{camera.id}/preview" if online else None}
+                "preview_url":f"/api/cameras/{camera.id}/preview" if has_preview else None,
+                "preview_stale":has_preview and not online,
+                "monitor_state":state.get('state'),"monitor_message":state.get('message'),
+                "archived_at":aware(camera.archived_at).isoformat() if camera.archived_at else None}
 
     def alert_data(alert):
+        with sessions() as db:
+            camera=db.get(Camera,alert.camera_id)
+            location=camera.location if camera else ''
         return {"id":alert.id,"camera_id":alert.camera_id,"camera_name":alert.camera_name,"kind":alert.kind,
                 "state":alert.state,"created_at":aware(alert.created_at).isoformat(),"confidence":alert.confidence,
                 "model_sha256":alert.model_sha256,"policy_sha256":alert.policy_sha256,"detections":alert.detections,
-                "snapshot_url":f"/api/events/{alert.id}/snapshot" if alert.snapshot_key else None,"note":alert.note}
+                "snapshot_url":f"/api/events/{alert.id}/snapshot" if alert.snapshot_key else None,"note":alert.note,
+                "candidate_label":alert.candidate_label,"camera_location":location}
 
     def pair_camera(db, camera):
         code = "".join(secrets.choice("ABCDEFGHJKLMNPQRSTUVWXYZ23456789") for _ in range(8))
@@ -195,6 +213,8 @@ def create_app(settings=None, detector=None):
                 result["jpeg"] = await asyncio.to_thread(filtered_preview,data,result,cfg)
                 if monitoring.spatial_reset(monitor, result):
                     target_gate.reset(camera.id)
+                if monitoring.spatial_reset(monitor, result,'smoke'):
+                    target_gate.reset(camera.id+':smoke')
             with target_gate.lock, sessions() as db:
                 if monitor and not monitoring.current(camera.id,monitor.revision):
                     raise HTTPException(409,"감시 시험이 종료되었거나 설정이 변경되었습니다.")
@@ -212,16 +232,23 @@ def create_app(settings=None, detector=None):
                     raise HTTPException(409,"추론 중 카메라 연결이 해제되었습니다.")
                 current = db.get(Camera,camera.id)
                 next_state, temporal = target_gate.propose(camera.id,result["fire_candidate"],time.monotonic())
-                if temporal["trigger"]:
+                smoke_candidate=any(d['label']=='smoke' and d['score']>=.5 for d in result['detections'])
+                smoke_state, smoke_temporal=target_gate.propose(camera.id+':smoke',smoke_candidate,time.monotonic())
+                label='fire' if temporal['trigger'] else 'smoke'
+                triggered=temporal['trigger'] or smoke_temporal['trigger']
+                if triggered:
                     alert = Alert(owner_id=current.owner_id,camera_id=current.id,camera_name=current.name,
                                   kind="demo" if current.kind=="sample" else "live",
-                                  confidence=max(d["score"] for d in result["detections"] if d["label"]=="fire"),
-                                  model_sha256=model.model_hash,policy_sha256=monitoring.policy_hash(monitor,model.policy_hash) if monitor else model.policy_hash,
+                                  candidate_label=label,
+                                  confidence=max(d["score"] for d in result["detections"] if d["label"]==label),
+                                  model_sha256=model.model_hash,policy_sha256=monitoring.policy_hash(monitor,model.policy_hash) if monitor else
+                                  hashlib.sha256((model.policy_hash+':fire_smoke_temporal_v2:smoke_min_0.5').encode()).hexdigest(),
                                   detections=result["detections"])
                     db.add(alert)
                 db.commit()
                 target_gate.commit(camera.id, next_state)
-                if temporal["trigger"]:
+                target_gate.commit(camera.id+':smoke',smoke_state)
+                if triggered:
                     event_data = alert_data(alert)
                 live = camera_data(current)
             # The alarm exists before evidence I/O. Never hold a SQLite write
@@ -248,16 +275,16 @@ def create_app(settings=None, detector=None):
                 latest = db.get(Camera,camera.id)
                 still_connected = latest and latest.enabled and (not publisher_hash or latest.publisher_hash == publisher_hash)
                 if still_connected:
-                    live = camera_data(latest)
                     previews[camera.id] = (time.monotonic(),result["jpeg"])
+                    live = camera_data(latest)
             # Avoid retaining preview bytes for disconnected cameras indefinitely.
             for key,(stamp,_) in list(previews.items()):
-                if time.monotonic()-stamp>30:
+                if time.monotonic()-stamp>300:
                     previews.pop(key,None)
             if still_connected:
                 hub.publish(camera.owner_id,{"type":"camera.frame","camera":live})
             return {**{k:v for k,v in result.items() if k!="jpeg"},"camera_id":camera.id,
-                    "temporal":temporal,"event":event_data}
+                    "temporal":temporal,"smoke_temporal":smoke_temporal,"event":event_data}
         finally:
             busy.discard(camera.id)
 
@@ -334,14 +361,69 @@ def create_app(settings=None, detector=None):
     @app.get("/api/cameras")
     def cameras(owner=Depends(user)):
         with sessions() as db:
-            return [camera_data(c) for c in db.scalars(select(Camera).where(Camera.owner_id==owner.id).order_by(Camera.created_at))]
+            return [camera_data(c) for c in db.scalars(select(Camera).where(Camera.owner_id==owner.id,Camera.archived_at.is_(None)).order_by(Camera.created_at))]
+
+    @app.get('/api/cameras/archived')
+    def archived_cameras(owner=Depends(user)):
+        with sessions() as db:
+            return [camera_data(c) for c in db.scalars(select(Camera).where(Camera.owner_id==owner.id,Camera.archived_at.is_not(None)).order_by(Camera.archived_at.desc()))]
+
+    @app.post('/api/cameras/{camera_id}/archive')
+    async def archive_camera(camera_id:str,owner=Depends(user)):
+        lock=monitoring.revision_locks.setdefault(camera_id,asyncio.Lock())
+        async with lock:
+            with sessions() as db:
+                camera=owned_camera(db,camera_id,owner)
+                if camera.kind=='sample': raise HTTPException(409,'예제 카메라는 제거 대상이 아닙니다.')
+                camera.archived_at=utcnow();camera.enabled=False
+                camera.publisher_hash=camera.pair_hash=None
+                camera.publisher_expires=camera.pair_expires=None
+                m=db.get(Monitor,camera_id)
+                if m:
+                    for trial in db.scalars(select(MonitorTrial).where(MonitorTrial.camera_id==camera_id,MonitorTrial.state=='running')):
+                        trial.state='archived';trial.ended_at=utcnow()
+                        if camera_id in monitoring.metrics and monitoring.metrics_revisions.get(camera_id)==trial.revision:
+                            trial.report=monitoring.metrics[camera_id].report()
+                    m.enabled=False;m.revision+=1
+                db.add(AuditLog(owner_id=owner.id,action='camera.archived',target_id=camera_id))
+                db.commit()
+            if camera_id in monitoring.tasks: monitoring.tasks[camera_id].cancel()
+            gate.reset(camera_id);monitoring.gate.reset(camera_id);previews.pop(camera_id,None)
+            monitoring.anchors.pop(camera_id,None)
+        hub.publish(owner.id,{'type':'camera.updated','camera_id':camera_id})
+        return {'ok':True,'history_preserved':True}
+
+    @app.post('/api/cameras/{camera_id}/restore')
+    def restore_camera(camera_id:str,owner=Depends(user)):
+        with sessions() as db:
+            camera=db.get(Camera,camera_id)
+            if not camera or camera.owner_id!=owner.id: raise HTTPException(404,'카메라를 찾을 수 없습니다.')
+            if camera.archived_at is None: raise HTTPException(409,'제거된 카메라가 아닙니다.')
+            count=db.scalar(select(func.count()).select_from(Camera).where(Camera.owner_id==owner.id,Camera.kind!='sample',Camera.archived_at.is_(None)))
+            if count>=cfg.max_cameras: raise HTTPException(409,'카메라 등록 한도입니다.')
+            camera.archived_at=None;camera.enabled=False
+            db.add(AuditLog(owner_id=owner.id,action='camera.restored',target_id=camera_id));db.commit()
+        hub.publish(owner.id,{'type':'camera.updated','camera_id':camera_id})
+        return {'ok':True,'enabled':False}
+
+    @app.get('/api/cameras/{camera_id}/stream')
+    async def camera_stream(camera_id:str,owner=Depends(user)):
+        with sessions() as db:
+            camera=owned_camera(db,camera_id,owner);m=db.get(Monitor,camera_id)
+            if camera.kind!='its' or not m: raise HTTPException(409,'공공 CCTV 재생 설정이 없습니다.')
+            road,video_type,catalog_id=m.road,m.video_type,m.catalog_id
+        limiter.check('stream:'+owner.id,20,60)
+        catalog=await providers.catalog(road,video_type)
+        item=next((i for i in catalog['items'] if i['id']==catalog_id),None)
+        if not item: raise HTTPException(404,'제공기관 목록에 없는 CCTV입니다.')
+        return {'url':item['url'],'video_type':video_type,'name':item['name']}
 
     @app.post("/api/cameras",status_code=201)
     def create_camera(payload: CameraInput,owner=Depends(user)):
         if not payload.name.strip():
             raise HTTPException(422,"카메라 이름을 입력하세요.")
         with sessions() as db:
-            count = db.scalar(select(func.count()).select_from(Camera).where(Camera.owner_id==owner.id,Camera.kind!="sample"))
+            count = db.scalar(select(func.count()).select_from(Camera).where(Camera.owner_id==owner.id,Camera.kind!="sample",Camera.archived_at.is_(None)))
             if count>=cfg.max_cameras:
                 raise HTTPException(409,"프로토타입의 카메라 등록 한도에 도달했습니다.")
             camera = Camera(owner_id=owner.id,name=payload.name.strip(),location=payload.location.strip(),kind=payload.kind)
@@ -426,7 +508,7 @@ def create_app(settings=None, detector=None):
         with sessions() as db:
             owned_camera(db,camera_id,owner)
         data=previews.get(camera_id)
-        if not data or time.monotonic()-data[0]>12:
+        if not data or time.monotonic()-data[0]>300:
             raise HTTPException(404,"최근 프레임이 없습니다.")
         return Response(data[1],media_type="image/jpeg")
 
@@ -436,13 +518,19 @@ def create_app(settings=None, detector=None):
         camera_id = digest(owner.id + ":its:" + identity)[:32]
         with sessions() as db:
             camera = db.get(Camera, camera_id)
+            if camera and camera.archived_at is not None:
+                raise HTTPException(409,'제거된 카메라입니다. 카메라 관리에서 먼저 복원하세요.')
             if not camera:
-                if db.scalar(select(func.count()).select_from(Camera).where(Camera.owner_id==owner.id, Camera.kind!="sample")) >= cfg.max_cameras:
+                if db.scalar(select(func.count()).select_from(Camera).where(Camera.owner_id==owner.id, Camera.kind!="sample",Camera.archived_at.is_(None))) >= cfg.max_cameras:
                     raise HTTPException(409,"카메라 등록 한도에 도달했습니다.")
                 camera = Camera(id=camera_id, owner_id=owner.id, name=item["name"], kind="its",
                                 location=f'ITS 설치 좌표 {item["latitude"]:.6f}, {item["longitude"]:.6f} (발화점 아님)')
                 db.add(camera)
                 db.add(AuditLog(owner_id=owner.id, action="camera.its.register", target_id=camera_id))
+                db.commit()
+            if not db.get(Monitor,camera_id):
+                db.add(Monitor(camera_id=camera_id,owner_id=owner.id,catalog_id=identity,
+                               road=item['road'],video_type=item['video_type'],enabled=False))
                 db.commit()
             return camera_data(camera)
 
@@ -512,7 +600,7 @@ def create_app(settings=None, detector=None):
     @app.get("/api/stats")
     def stats(owner=Depends(user)):
         with sessions() as db:
-            cs=list(db.scalars(select(Camera).where(Camera.owner_id==owner.id,Camera.kind!="sample")))
+            cs=list(db.scalars(select(Camera).where(Camera.owner_id==owner.id,Camera.kind!="sample",Camera.archived_at.is_(None))))
             active=db.scalar(select(func.count()).select_from(Alert).where(Alert.owner_id==owner.id,Alert.state!="resolved"))
             today=db.scalar(select(func.count()).select_from(Alert).where(Alert.owner_id==owner.id,Alert.created_at>=utcnow()-timedelta(hours=24)))
             latencies=[c.latency_ms for c in cs if camera_data(c)["online"] and c.latency_ms is not None]

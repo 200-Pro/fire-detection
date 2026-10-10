@@ -184,3 +184,24 @@ def test_active_media_playlist_reused_instead_of_entry_ticket(monkeypatch):
     assert hls.read('x','https://video.example.org/ticket') is None
     assert urls==['https://video.example.org/ticket','https://video.example.org:8082/live/seg.ts',
                  'https://video.example.org:8082/live/media.m3u8']
+
+def test_stream_error_phase_sanitized_and_reader_forget(monkeypatch):
+    import app.stream_reader as reader
+    import pytest
+    monkeypatch.setenv('EMBER_STREAM_ALLOWED_HOSTS','video.example.org')
+    def fail(*args,**kwargs):
+        raise reader.StreamError('제공기관 영상 응답 오류 (403)',status_code=403,retry_after=120)
+    monkeypatch.setattr(reader,'fetch_bytes',fail)
+    hls=reader.HlsReader();hls.playlists['c']=('https://video.example.org/ticket','https://video.example.org/media');hls.last['c']='old'
+    with pytest.raises(reader.StreamError) as captured:
+        hls.read('c','https://video.example.org/ticket')
+    assert captured.value.stage=='playlist' and captured.value.status_code==403
+    assert captured.value.retry_after==120 and 'https' not in str(captured.value)
+    hls.forget('c');assert 'c' not in hls.playlists and 'c' not in hls.last
+
+def test_retry_after_date_and_seconds():
+    from app.stream_reader import retry_seconds
+    from email.utils import format_datetime
+    assert retry_seconds('120')==120
+    assert retry_seconds('invalid')==0
+    assert 110<=retry_seconds(format_datetime(utcnow()+timedelta(seconds=120)))<=121

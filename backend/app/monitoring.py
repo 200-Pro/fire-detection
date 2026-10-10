@@ -98,7 +98,8 @@ class MonitorService:
     def policy_hash(self,m,original):
         c=self.gate.settings
         return hashlib.sha256(json.dumps({"base_policy":original,"rules":m.rules,"revision":m.revision,
-            "temporal":{"version":"spatial_iou_0.2_v1","hits":c.alarm_hits,"window":c.alarm_window,
+            "smoke_min_score":.5,
+            "temporal":{"version":"fire_smoke_spatial_iou_0.2_v2","hits":c.alarm_hits,"window":c.alarm_window,
                         "gap_seconds":c.frame_gap_seconds,"min_seconds":c.alarm_min_seconds,
                         "cooldown_seconds":c.alarm_cooldown_seconds}},sort_keys=True).encode()).hexdigest()
 
@@ -122,7 +123,7 @@ class MonitorService:
     def current(self,camera_id,revision=None):
         with self.sessions() as db:
             m=db.get(Monitor,camera_id);c=db.get(Camera,camera_id)
-            if not m or not c or not m.enabled or not c.enabled:
+            if not m or not c or not m.enabled or not c.enabled or c.archived_at is not None:
                 return None
             if revision is not None and m.revision!=revision:
                 return None
@@ -153,11 +154,12 @@ class MonitorService:
                 "ended_at":aware(trial.ended_at).isoformat() if trial.ended_at else None,
                 "evidence_hours":trial.evidence_hours,"report":report}
 
-    def spatial_reset(self,m,result):
-        fires=[d["box"] for d in result["detections"] if d["label"]=="fire"]
+    def spatial_reset(self,m,result,label='fire'):
+        identity=m.camera_id if label=='fire' else m.camera_id+':smoke'
+        fires=[d["box"] for d in result["detections"] if d["label"]==label and (label=='fire' or d['score']>=.5)]
         now=time.monotonic()
-        prior=self.anchors.get(m.camera_id)
-        self.anchors[m.camera_id]=(now,fires or (prior[1] if prior else []))
+        prior=self.anchors.get(identity)
+        self.anchors[identity]=(now,fires or (prior[1] if prior else []))
         def corners(b):
             x,y,w,h=b;return [x,y,x+w,y+h]
         return bool(fires and prior and prior[1] and (now-prior[0]>30 or
@@ -206,6 +208,8 @@ class MonitorService:
         self.metrics_revisions[identity]=current[0].revision
         network_previous={key:previous.get(key,0) for key in ("video_http_attempts","video_success_bytes")}
         self.reader.stats.pop(identity,None)
+        # A restarted worker must not inherit an expired provider playback session.
+        self.reader.forget(identity)
         state["frames"]=previous.get("frames",0)
         state["failures"]=previous.get("failures",0)
         delay=3
@@ -267,13 +271,21 @@ class MonitorService:
                     metrics.totals["last_failure_type"]=type(exc).__name__
                     metrics.totals["last_failure_detail"]=str(exc) if isinstance(exc,StreamError) else "영상/모델 작업 실패 (민감한 예외 내용은 표출하지 않음)"
                     delay=min(300,max(15,delay*2))
+                    if isinstance(exc,StreamError):
+                        metrics.totals['last_failure_stage']=exc.stage
+                        metrics.totals['last_http_status']=exc.status_code
+                        if exc.status_code in (401,403,429): delay=max(60,delay)
+                        delay=max(delay,exc.retry_after)
+                    state['retry_at']=(utcnow()+timedelta(seconds=delay)).isoformat()
+                    state['message']=metrics.totals['last_failure_detail']
                 metrics.observe("cycle_ms",(time.monotonic()-cycle_started)*1000)
                 for key,value in self.reader.stats.get(identity,{}).items():
                     metrics.totals[key]=network_previous.get(key,0)+value
                 state["metrics"]=metrics.report()
                 await asyncio.sleep(delay)
         finally:
-            self.gate.reset(identity);self.anchors.pop(identity,None)
+            self.gate.reset(identity);self.anchors.pop(identity,None);self.anchors.pop(identity+':smoke',None)
+            self.reader.forget(identity)
             state.update(state="stopped",message="상시 분석 중지")
 
     def alert_created(self,m,event,result,frame):
@@ -336,7 +348,7 @@ def register_monitor_routes(app,cfg,user,sessions,providers,process_frame,spread
     def listing(owner=Depends(user)):
         with sessions() as db:
             rows=list(db.scalars(select(Monitor).where(Monitor.owner_id==owner.id)))
-            return {"items":[{**service.status(m),"name":db.get(Camera,m.camera_id).name} for m in rows],
+            return {"items":[{**service.status(m),"name":db.get(Camera,m.camera_id).name} for m in rows if db.get(Camera,m.camera_id).archived_at is None],
                     "server_approved":cfg.cctv_ai_approved,"capacity":cfg.monitor_capacity,
                     "message":"등록·활성화된 카메라만 분석. 전체 공공 목록 자동 수집 아님. 서버가 켜져 있어야 합니다."}
 
@@ -368,9 +380,11 @@ def register_monitor_routes(app,cfg,user,sessions,providers,process_frame,spread
         async with lock:
             with sessions() as db:
                 camera=db.get(Camera,identity)
+                if camera and camera.archived_at is not None:
+                    raise HTTPException(409,'이 카메라는 목록에서 제거됐습니다. 카메라 관리에서 먼저 복원하세요.')
                 if not camera:
                     count=db.scalar(select(func.count()).select_from(Camera).where(
-                        Camera.owner_id==owner.id,Camera.kind!="sample"))
+                        Camera.owner_id==owner.id,Camera.kind!="sample",Camera.archived_at.is_(None)))
                     if count>=cfg.max_cameras:
                         raise HTTPException(409,"카메라 등록 한도입니다.")
                     camera=Camera(id=identity,owner_id=owner.id,name=item["name"],kind="its",

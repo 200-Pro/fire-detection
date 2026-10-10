@@ -21,6 +21,7 @@ class AlarmGate:
     def reset(self, camera_id):
         with self.lock:
             self.states.pop(camera_id, None)
+            self.states.pop(camera_id+':smoke', None)
 
     def propose(self, camera_id, fire, now):
         """Compute without latching an alarm until its database commit succeeds."""

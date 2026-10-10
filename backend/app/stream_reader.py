@@ -1,6 +1,6 @@
 """Bounded HLS sampling. FFmpeg receives bytes only, never a network URL.
 All nested URLs require explicit host allowlisting and a pinned public IP.
-No redirects, cookies, HTTP auth, encryption/DRM or access-control bypass.
+Only bounded same-host redirects; no cookies, HTTP auth, DRM or access-control bypass.
 """
 import http.client
 import ipaddress
@@ -9,11 +9,25 @@ import socket
 import ssl
 import subprocess
 import time
+from datetime import datetime, timezone
+from email.utils import parsedate_to_datetime
 from urllib.parse import urlsplit, urljoin
 from .providers import Providers
 
 class StreamError(Exception):
-    pass
+    def __init__(self, message, *, status_code=None, retry_after=0, stage=None):
+        super().__init__(message)
+        self.status_code=status_code
+        self.retry_after=retry_after
+        self.stage=stage
+
+def retry_seconds(value):
+    if value.isdecimal(): return int(value)
+    try:
+        date=parsedate_to_datetime(value)
+        return max(0,int((date-datetime.now(timezone.utc)).total_seconds())+1)
+    except (TypeError,ValueError,OverflowError):
+        return 0
 
 def safe_target(url, allowed_hosts):
     if not Providers.public_stream(url) or len(url)>4096:
@@ -62,7 +76,9 @@ def fetch_bytes(url, allowed_hosts, limit, redirects=2, stats=None, metadata=Non
             connection.close()
             return fetch_bytes(target,allowed_hosts,limit,redirects-1,stats,metadata)
         if response.status!=200:
-            raise StreamError(f"제공기관 영상 응답 오류 ({response.status})입니다. 반복 접속하지 않고 대기합니다.")
+            retry=response.getheader('Retry-After') or ''
+            raise StreamError(f"제공기관 영상 응답 오류 ({response.status})입니다. 반복 접속하지 않고 대기합니다.",
+                              status_code=response.status,retry_after=retry_seconds(retry))
         length=response.getheader("Content-Length")
         if length and (not length.isdecimal() or int(length)>limit):
             raise StreamError("영상 응답 크기 한도를 초과했습니다.")
@@ -112,8 +128,16 @@ class HlsReader:
     def measured_fetch(self, identity, url, hosts, limit):
         stats=self.stats.setdefault(identity,{"video_http_attempts":0,"video_success_bytes":0})
         metadata={}
-        data=fetch_bytes(url,hosts,limit,stats=stats,metadata=metadata)
+        try:
+            data=fetch_bytes(url,hosts,limit,stats=stats,metadata=metadata)
+        except StreamError as exc:
+            exc.stage='playlist' if limit==512000 else 'segment'
+            raise
         return data,metadata["url"]
+
+    def forget(self, identity):
+        self.last.pop(identity,None)
+        self.playlists.pop(identity,None)
 
     @property
     def allowed_hosts(self):
