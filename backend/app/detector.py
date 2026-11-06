@@ -5,7 +5,7 @@ import os
 import time
 import warnings
 from PIL import Image, ImageDraw, ImageOps
-from .policy import filter_predictions
+from .policy import filter_predictions, refine_predictions
 
 def file_hash(path):
     h = sha256()
@@ -50,6 +50,7 @@ class YoloDetector:
             if self.model_hash != config["model_sha256"]:
                 raise ValueError("모델과 후처리 설정 해시가 다릅니다. 새 모델 검증 후 설정을 갱신하세요.")
             raw = config["raw_predict"]
+            refine_predictions([], [], config.get("box_refinement"))
             if raw["conf"] > config["filter"]["weak_conf"]:
                 raise ValueError("예측 후보 기준이 후처리 기준보다 높습니다.")
             os.environ.setdefault("YOLO_CONFIG_DIR", str(self.settings.storage_path.parent / "ultralytics"))
@@ -81,8 +82,7 @@ class YoloDetector:
         indices = filter_predictions(predictions, self.config["filter"], result.orig_shape)
         h, w = result.orig_shape
         detections = []
-        for i in indices:
-            p = predictions[i]
+        for p in refine_predictions(predictions, indices, self.config.get("box_refinement")):
             detections.append({"class_id": p["class_id"], "label": self.model.names[p["class_id"]],
                                "score": round(p["score"], 5), "xyxy": p["xyxy"],
                                "box": [p["xyxy"][0]/w, p["xyxy"][1]/h,

@@ -71,3 +71,39 @@ def filter_predictions(predictions, policy, shape):
         if all(box_iou(predictions[index]['xyxy'], predictions[k]['xyxy']) <= duplicate_iou for k in kept):
             kept.append(index)
     return sorted(kept + [i for i in selected if predictions[i]['class_id'] == 0])
+
+
+def refine_predictions(predictions, indices, refinement=None):
+    """Optional localization only: preserve labels, scores, count and candidates.
+
+    Average overlapping same-class raw proposals, then conservatively blend with
+    the selected box. No label data or smoke-to-fire relabeling is used.
+    """
+    if not refinement:
+        return [dict(predictions[i], xyxy=list(predictions[i]['xyxy'])) for i in indices]
+    import math
+    alpha = float(refinement['alpha'])
+    overlap = float(refinement['iou_threshold'])
+    minimum = float(refinement['min_score'])
+    ratio = float(refinement.get('score_ratio', .5))
+    classes = refinement.get('class_ids', [1])
+    if (not all(math.isfinite(v) for v in [alpha, overlap, minimum, ratio]) or
+        not 0 <= alpha <= 1 or not 0 < overlap <= 1 or not 0 <= minimum <= 1 or
+        not 0 <= ratio <= 1 or classes != [1]):
+        raise ValueError('Unsupported localization refinement parameters')
+    output = []
+    for index in indices:
+        original = predictions[index]
+        pred = dict(original, xyxy=list(original['xyxy']))
+        if pred['class_id'] in classes:
+            peers = [q for q in predictions if q['class_id'] == pred['class_id']
+                     and q['score'] >= max(minimum, pred['score'] * ratio)
+                     and box_iou(pred['xyxy'], q['xyxy']) >= overlap]
+            if len(peers) > 1:
+                weights = [q['score'] ** 2 for q in peers]
+                denominator = sum(weights)
+                average = [sum(q['xyxy'][j] * w for q, w in zip(peers, weights)) / denominator
+                           for j in range(4)]
+                pred['xyxy'] = [(1-alpha)*x + alpha*y for x, y in zip(pred['xyxy'], average)]
+        output.append(pred)
+    return output

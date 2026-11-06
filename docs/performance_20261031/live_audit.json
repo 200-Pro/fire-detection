@@ -1,0 +1,39 @@
+{
+  "kma": {
+    "ok": true,
+    "fresh": true,
+    "observed_at": "2026-10-31T11:00:00+00:00",
+    "error_code": null,
+    "elapsed_ms": 1647
+  },
+  "nifos": {
+    "ok": true,
+    "fresh": true,
+    "age_minutes": 80.8,
+    "elapsed_ms": 1290
+  },
+  "its": {
+    "ok": true,
+    "catalog_items": 216,
+    "frame_decoded": true,
+    "camera_name": "[경부선] 안심",
+    "stored": false,
+    "elapsed_ms": 3717
+  },
+  "utic": {
+    "ok": true,
+    "catalog_items": 177,
+    "width": 1080,
+    "height": 720,
+    "requests": 3,
+    "stored": false,
+    "ai_analysis": false,
+    "elapsed_ms": 5176
+  },
+  "naver_geocoding": {
+    "ok": true,
+    "address_count": 1,
+    "query": "대구광역시 중구 공평로 88",
+    "verification": "follow-up exact-address query returned status OK and one address"
+  }
+}

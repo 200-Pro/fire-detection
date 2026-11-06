@@ -10,7 +10,7 @@ class Settings:
     environment: str = "development"
     database_url: str = f"sqlite:///{(ROOT / 'runtime' / 'ember.db').as_posix()}"
     model_path: Path = ROOT / "models" / "best.pt"
-    policy_path: Path = ROOT / "models" / "fire_policy_v1.json"
+    policy_path: Path = ROOT / "models" / "fire_policy_v2.json"
     storage_path: Path = ROOT / "runtime" / "evidence"
     samples_path: Path = ROOT / "samples"
     admin_name: str = "admin"

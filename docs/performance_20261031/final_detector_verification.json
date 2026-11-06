@@ -1,0 +1,19 @@
+{
+  "model_sha256": "57c133a489976dc2f7341381b12cf160622e0bbaff33aeffdee4926e2093611d",
+  "policy_version": "fire-policy-v2-localization",
+  "cached_validation_fire": {
+    "tp": 1526,
+    "fp": 728,
+    "fn": 628
+  },
+  "smoke_identical": true,
+  "same_classes_scores_and_counts": true,
+  "timing_images": 16,
+  "timing_rounds": 2,
+  "torch_threads": 4,
+  "device": "cpu",
+  "v1_median_ms": 47.7,
+  "v2_median_ms": 46.2,
+  "v2_p95_ms": 56.625,
+  "timing_is_not_event_latency": true
+}

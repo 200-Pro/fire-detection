@@ -1,0 +1,24 @@
+{
+  "cases": [
+    {
+      "horizon_model_min": 30,
+      "same_features": true,
+      "old_median_ms": 492.78400000002875,
+      "new_median_ms": 155.951499999901,
+      "runs": 30,
+      "repetitions": 5,
+      "speedup": 3.1598541854380473
+    },
+    {
+      "horizon_model_min": 60,
+      "same_features": true,
+      "old_median_ms": 908.6173999994571,
+      "new_median_ms": 299.01169999993726,
+      "runs": 30,
+      "repetitions": 5,
+      "speedup": 3.038735273568385
+    }
+  ],
+  "exact_equivalence_cases": 12,
+  "accuracy_improvement_claimed": false
+}

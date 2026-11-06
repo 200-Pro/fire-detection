@@ -20,6 +20,7 @@ from .detector import YoloDetector
 from .storage import EvidenceStore
 from .spread.routes import register_spread_routes
 from .providers import register_provider_routes
+from .utic import register_utic_routes
 from .monitoring import register_monitor_routes, apply_rules, filtered_preview
 from .models import Monitor, MonitorTrial
 
@@ -124,6 +125,7 @@ def create_app(settings=None, detector=None):
 
     spread = register_spread_routes(app, cfg, user, spread_event_lookup)
     providers = register_provider_routes(app, user, limiter)
+    register_utic_routes(app, user, limiter)
 
     def camera_data(camera):
         age = (utcnow()-aware(camera.last_seen)).total_seconds() if camera.last_seen else 1e12

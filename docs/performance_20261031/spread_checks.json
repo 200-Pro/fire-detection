@@ -1,0 +1,490 @@
+{
+  "checked_at": "2026-10-31T12:19:51.190314+00:00",
+  "source_checks": [
+    {
+      "name": "35803.img",
+      "unchanged": true
+    },
+    {
+      "name": "35803054 임상도.zip",
+      "unchanged": true
+    },
+    {
+      "name": "35803063 임상도.zip",
+      "unchanged": true
+    },
+    {
+      "name": "35803074 임상도.zip",
+      "unchanged": true
+    },
+    {
+      "name": "35803054 토양도.zip",
+      "unchanged": true
+    },
+    {
+      "name": "35803063 토양도.zip",
+      "unchanged": true
+    },
+    {
+      "name": "35803074 토양도.zip",
+      "unchanged": true
+    }
+  ],
+  "grid_sha256": "c84b4ca6d9019031384ca60e60cecc0f61eee19c931ac0921e42425bf5a0a8ab",
+  "engine_sha256": "41692109bca37c3092b2f27784477eb509bc30fbd9515498b71ab3d694882149",
+  "repeatability": true,
+  "weather_sensitivity": true,
+  "single_factor_sensitivity": true,
+  "cumulative_area": true,
+  "cases": [
+    {
+      "case": "ca",
+      "request": {
+        "latitude": 35.81364808382724,
+        "longitude": 128.59225138052454,
+        "model": "ca",
+        "horizon_min": 30,
+        "runs": 30,
+        "seed": 42,
+        "base_ros_m_min": 6,
+        "weather": {
+          "source": "manual",
+          "temperature_c": 20,
+          "humidity_pct": 40,
+          "wind_speed_ms": 3,
+          "wind_from_deg": 270,
+          "rain_mm": 0
+        }
+      },
+      "geometry_sha256": "27f32612adf2d57926d11d63c411e0ac68f770610b7900f7050ce0fd2d78175a",
+      "horizons": [
+        {
+          "minute": 10,
+          "mean_area_ha": 10.75,
+          "any_run_area_ha": 42.93
+        },
+        {
+          "minute": 30,
+          "mean_area_ha": 49.44,
+          "any_run_area_ha": 172.53
+        }
+      ],
+      "runtime_ms": 167
+    },
+    {
+      "case": "repeat",
+      "request": {
+        "latitude": 35.81364808382724,
+        "longitude": 128.59225138052454,
+        "model": "ca",
+        "horizon_min": 30,
+        "runs": 30,
+        "seed": 42,
+        "base_ros_m_min": 6,
+        "weather": {
+          "source": "manual",
+          "temperature_c": 20,
+          "humidity_pct": 40,
+          "wind_speed_ms": 3,
+          "wind_from_deg": 270,
+          "rain_mm": 0
+        }
+      },
+      "geometry_sha256": "27f32612adf2d57926d11d63c411e0ac68f770610b7900f7050ce0fd2d78175a",
+      "horizons": [
+        {
+          "minute": 10,
+          "mean_area_ha": 10.75,
+          "any_run_area_ha": 42.93
+        },
+        {
+          "minute": 30,
+          "mean_area_ha": 49.44,
+          "any_run_area_ha": 172.53
+        }
+      ],
+      "runtime_ms": 139
+    },
+    {
+      "case": "circle",
+      "request": {
+        "latitude": 35.81364808382724,
+        "longitude": 128.59225138052454,
+        "model": "circle",
+        "horizon_min": 30,
+        "runs": 30,
+        "seed": 42,
+        "base_ros_m_min": 6,
+        "weather": {
+          "source": "manual",
+          "temperature_c": 20,
+          "humidity_pct": 40,
+          "wind_speed_ms": 3,
+          "wind_from_deg": 270,
+          "rain_mm": 0
+        }
+      },
+      "geometry_sha256": "3863ac3a6f7d78f6dc31116f80bc0c4d1d35c4ed52ffab74ae748bfb56326c11",
+      "horizons": [
+        {
+          "minute": 10,
+          "mean_area_ha": 0.81,
+          "any_run_area_ha": 0.81
+        },
+        {
+          "minute": 30,
+          "mean_area_ha": 10.53,
+          "any_run_area_ha": 10.53
+        }
+      ],
+      "runtime_ms": 13
+    },
+    {
+      "case": "ellipse",
+      "request": {
+        "latitude": 35.81364808382724,
+        "longitude": 128.59225138052454,
+        "model": "ellipse",
+        "horizon_min": 30,
+        "runs": 30,
+        "seed": 42,
+        "base_ros_m_min": 6,
+        "weather": {
+          "source": "manual",
+          "temperature_c": 20,
+          "humidity_pct": 40,
+          "wind_speed_ms": 3,
+          "wind_from_deg": 270,
+          "rain_mm": 0
+        }
+      },
+      "geometry_sha256": "92f8796afddb1d3335c27e279a5bad2571f12e364a3d691285a8650fe77d896a",
+      "horizons": [
+        {
+          "minute": 10,
+          "mean_area_ha": 1.62,
+          "any_run_area_ha": 1.62
+        },
+        {
+          "minute": 30,
+          "mean_area_ha": 14.58,
+          "any_run_area_ha": 14.58
+        }
+      ],
+      "runtime_ms": 13
+    },
+    {
+      "case": "wind_calm",
+      "request": {
+        "latitude": 35.81364808382724,
+        "longitude": 128.59225138052454,
+        "model": "ca",
+        "horizon_min": 30,
+        "runs": 30,
+        "seed": 42,
+        "base_ros_m_min": 6,
+        "weather": {
+          "source": "manual",
+          "temperature_c": 20,
+          "humidity_pct": 40,
+          "wind_speed_ms": 0,
+          "wind_from_deg": 270,
+          "rain_mm": 0
+        }
+      },
+      "geometry_sha256": "42532a87d238f2ab8b43ba2d5730945b68c0ca9db94220c2132d2a93cb77199d",
+      "horizons": [
+        {
+          "minute": 10,
+          "mean_area_ha": 10.64,
+          "any_run_area_ha": 49.41
+        },
+        {
+          "minute": 30,
+          "mean_area_ha": 51.33,
+          "any_run_area_ha": 180.63
+        }
+      ],
+      "runtime_ms": 126
+    },
+    {
+      "case": "wind_6",
+      "request": {
+        "latitude": 35.81364808382724,
+        "longitude": 128.59225138052454,
+        "model": "ca",
+        "horizon_min": 30,
+        "runs": 30,
+        "seed": 42,
+        "base_ros_m_min": 6,
+        "weather": {
+          "source": "manual",
+          "temperature_c": 20,
+          "humidity_pct": 40,
+          "wind_speed_ms": 6,
+          "wind_from_deg": 270,
+          "rain_mm": 0
+        }
+      },
+      "geometry_sha256": "f8131339e3f8171f029f818687967386ea4059f961202be46bfa66ea98908126",
+      "horizons": [
+        {
+          "minute": 10,
+          "mean_area_ha": 12.34,
+          "any_run_area_ha": 48.6
+        },
+        {
+          "minute": 30,
+          "mean_area_ha": 60.02,
+          "any_run_area_ha": 167.67
+        }
+      ],
+      "runtime_ms": 142
+    },
+    {
+      "case": "humidity_20",
+      "request": {
+        "latitude": 35.81364808382724,
+        "longitude": 128.59225138052454,
+        "model": "ca",
+        "horizon_min": 30,
+        "runs": 30,
+        "seed": 42,
+        "base_ros_m_min": 6,
+        "weather": {
+          "source": "manual",
+          "temperature_c": 20,
+          "humidity_pct": 20,
+          "wind_speed_ms": 3,
+          "wind_from_deg": 270,
+          "rain_mm": 0
+        }
+      },
+      "geometry_sha256": "3cef82d1fe00f45eb8343ec55fc66b2471b49a4b9a11fdf138bba1cd33c1d748",
+      "horizons": [
+        {
+          "minute": 10,
+          "mean_area_ha": 13.28,
+          "any_run_area_ha": 57.51
+        },
+        {
+          "minute": 30,
+          "mean_area_ha": 73.57,
+          "any_run_area_ha": 205.74
+        }
+      ],
+      "runtime_ms": 140
+    },
+    {
+      "case": "humidity_80",
+      "request": {
+        "latitude": 35.81364808382724,
+        "longitude": 128.59225138052454,
+        "model": "ca",
+        "horizon_min": 30,
+        "runs": 30,
+        "seed": 42,
+        "base_ros_m_min": 6,
+        "weather": {
+          "source": "manual",
+          "temperature_c": 20,
+          "humidity_pct": 80,
+          "wind_speed_ms": 3,
+          "wind_from_deg": 270,
+          "rain_mm": 0
+        }
+      },
+      "geometry_sha256": "3611693a1b39f0daf1b3f3e2435c21de09b172e927e1d507d4a724a98ba58c64",
+      "horizons": [
+        {
+          "minute": 10,
+          "mean_area_ha": 7.24,
+          "any_run_area_ha": 33.21
+        },
+        {
+          "minute": 30,
+          "mean_area_ha": 19.17,
+          "any_run_area_ha": 102.87
+        }
+      ],
+      "runtime_ms": 119
+    },
+    {
+      "case": "rain_5",
+      "request": {
+        "latitude": 35.81364808382724,
+        "longitude": 128.59225138052454,
+        "model": "ca",
+        "horizon_min": 30,
+        "runs": 30,
+        "seed": 42,
+        "base_ros_m_min": 6,
+        "weather": {
+          "source": "manual",
+          "temperature_c": 20,
+          "humidity_pct": 40,
+          "wind_speed_ms": 3,
+          "wind_from_deg": 270,
+          "rain_mm": 5
+        }
+      },
+      "geometry_sha256": "1a25ec2ca0f439b121842396aa4389b36f2e9cae7053075941679d03b173fe10",
+      "horizons": [
+        {
+          "minute": 10,
+          "mean_area_ha": 1.67,
+          "any_run_area_ha": 11.34
+        },
+        {
+          "minute": 30,
+          "mean_area_ha": 1.89,
+          "any_run_area_ha": 14.58
+        }
+      ],
+      "runtime_ms": 145
+    },
+    {
+      "case": "wind_from_90",
+      "request": {
+        "latitude": 35.81364808382724,
+        "longitude": 128.59225138052454,
+        "model": "ca",
+        "horizon_min": 30,
+        "runs": 30,
+        "seed": 42,
+        "base_ros_m_min": 6,
+        "weather": {
+          "source": "manual",
+          "temperature_c": 20,
+          "humidity_pct": 40,
+          "wind_speed_ms": 3,
+          "wind_from_deg": 90,
+          "rain_mm": 0
+        }
+      },
+      "geometry_sha256": "319ff4fddc3755388cfb544d7daf3e64977eda2b097b248be73db100eeaf69e4",
+      "horizons": [
+        {
+          "minute": 10,
+          "mean_area_ha": 11.99,
+          "any_run_area_ha": 49.41
+        },
+        {
+          "minute": 30,
+          "mean_area_ha": 60.53,
+          "any_run_area_ha": 231.66
+        }
+      ],
+      "runtime_ms": 161
+    },
+    {
+      "case": "horizon_60",
+      "request": {
+        "latitude": 35.81364808382724,
+        "longitude": 128.59225138052454,
+        "model": "ca",
+        "horizon_min": 60,
+        "runs": 30,
+        "seed": 42,
+        "base_ros_m_min": 6,
+        "weather": {
+          "source": "manual",
+          "temperature_c": 20,
+          "humidity_pct": 40,
+          "wind_speed_ms": 3,
+          "wind_from_deg": 270,
+          "rain_mm": 0
+        }
+      },
+      "geometry_sha256": "514bcb1edcc49f9b87f99af06286f5d6f5241b84cedbf187db0c721e75fd6b4d",
+      "horizons": [
+        {
+          "minute": 10,
+          "mean_area_ha": 10.75,
+          "any_run_area_ha": 42.93
+        },
+        {
+          "minute": 30,
+          "mean_area_ha": 49.44,
+          "any_run_area_ha": 172.53
+        },
+        {
+          "minute": 60,
+          "mean_area_ha": 107.16,
+          "any_run_area_ha": 380.7
+        }
+      ],
+      "runtime_ms": 269
+    },
+    {
+      "case": "dry_windy",
+      "request": {
+        "latitude": 35.81364808382724,
+        "longitude": 128.59225138052454,
+        "model": "ca",
+        "horizon_min": 30,
+        "runs": 30,
+        "seed": 42,
+        "base_ros_m_min": 6,
+        "weather": {
+          "source": "manual",
+          "temperature_c": 20,
+          "humidity_pct": 20,
+          "wind_speed_ms": 6,
+          "wind_from_deg": 270,
+          "rain_mm": 0
+        }
+      },
+      "geometry_sha256": "b64882aadb4f42db94f906e568d3378448b86e3cbe48bbb4710d5429b5902b01",
+      "horizons": [
+        {
+          "minute": 10,
+          "mean_area_ha": 16.79,
+          "any_run_area_ha": 65.61
+        },
+        {
+          "minute": 30,
+          "mean_area_ha": 88.18,
+          "any_run_area_ha": 209.79
+        }
+      ],
+      "runtime_ms": 143
+    },
+    {
+      "case": "humid_rain",
+      "request": {
+        "latitude": 35.81364808382724,
+        "longitude": 128.59225138052454,
+        "model": "ca",
+        "horizon_min": 30,
+        "runs": 30,
+        "seed": 42,
+        "base_ros_m_min": 6,
+        "weather": {
+          "source": "manual",
+          "temperature_c": 20,
+          "humidity_pct": 80,
+          "wind_speed_ms": 3,
+          "wind_from_deg": 270,
+          "rain_mm": 5
+        }
+      },
+      "geometry_sha256": "2d27bc70481213a95bdba33f71012c460520d171308c7bc10dddfa41912caff5",
+      "horizons": [
+        {
+          "minute": 10,
+          "mean_area_ha": 1.46,
+          "any_run_area_ha": 7.29
+        },
+        {
+          "minute": 30,
+          "mean_area_ha": 1.57,
+          "any_run_area_ha": 8.91
+        }
+      ],
+      "runtime_ms": 154
+    }
+  ],
+  "accuracy_validated": false,
+  "warning": "소프트웨어 동작 검증만 수행했습니다. 실제 산불 확산 정확도 검증이 아닙니다."
+}

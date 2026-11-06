@@ -1,0 +1,1241 @@
+{
+  "images": 3445,
+  "model_sha256": "57c133a489976dc2f7341381b12cf160622e0bbaff33aeffdee4926e2093611d",
+  "evaluation": "reused validation development experiment, IoU .5, not mAP/event evaluation",
+  "classes": {
+    "0": {
+      "baseline": {
+        "calibration": {
+          "tp": 908,
+          "fp": 254,
+          "fn": 204,
+          "background_fp_images": 44,
+          "positive_images_missed": 124
+        },
+        "audit": {
+          "tp": 604,
+          "fp": 194,
+          "fn": 173,
+          "background_fp_images": 19,
+          "positive_images_missed": 105
+        },
+        "all": {
+          "tp": 1512,
+          "fp": 448,
+          "fn": 377,
+          "background_fp_images": 63,
+          "positive_images_missed": 229
+        }
+      },
+      "chosen": {
+        "parameters": {
+          "alpha": 0.25,
+          "overlap": 0.5,
+          "min_score": 0.1
+        },
+        "metrics": {
+          "calibration": {
+            "tp": 909,
+            "fp": 253,
+            "fn": 203,
+            "background_fp_images": 44,
+            "positive_images_missed": 123
+          },
+          "audit": {
+            "tp": 605,
+            "fp": 193,
+            "fn": 172,
+            "background_fp_images": 19,
+            "positive_images_missed": 106
+          },
+          "all": {
+            "tp": 1514,
+            "fp": 446,
+            "fn": 375,
+            "background_fp_images": 63,
+            "positive_images_missed": 229
+          }
+        },
+        "calibration_guard": true
+      },
+      "audit_pass": false,
+      "trials": [
+        {
+          "parameters": {
+            "alpha": 0.25,
+            "overlap": 0.5,
+            "min_score": 0.1
+          },
+          "metrics": {
+            "calibration": {
+              "tp": 909,
+              "fp": 253,
+              "fn": 203,
+              "background_fp_images": 44,
+              "positive_images_missed": 123
+            },
+            "audit": {
+              "tp": 605,
+              "fp": 193,
+              "fn": 172,
+              "background_fp_images": 19,
+              "positive_images_missed": 106
+            },
+            "all": {
+              "tp": 1514,
+              "fp": 446,
+              "fn": 375,
+              "background_fp_images": 63,
+              "positive_images_missed": 229
+            }
+          },
+          "calibration_guard": true
+        },
+        {
+          "parameters": {
+            "alpha": 0.25,
+            "overlap": 0.5,
+            "min_score": 0.2
+          },
+          "metrics": {
+            "calibration": {
+              "tp": 908,
+              "fp": 254,
+              "fn": 204,
+              "background_fp_images": 44,
+              "positive_images_missed": 124
+            },
+            "audit": {
+              "tp": 604,
+              "fp": 194,
+              "fn": 173,
+              "background_fp_images": 19,
+              "positive_images_missed": 106
+            },
+            "all": {
+              "tp": 1512,
+              "fp": 448,
+              "fn": 377,
+              "background_fp_images": 63,
+              "positive_images_missed": 230
+            }
+          },
+          "calibration_guard": true
+        },
+        {
+          "parameters": {
+            "alpha": 0.25,
+            "overlap": 0.6,
+            "min_score": 0.1
+          },
+          "metrics": {
+            "calibration": {
+              "tp": 909,
+              "fp": 253,
+              "fn": 203,
+              "background_fp_images": 44,
+              "positive_images_missed": 123
+            },
+            "audit": {
+              "tp": 603,
+              "fp": 195,
+              "fn": 174,
+              "background_fp_images": 19,
+              "positive_images_missed": 106
+            },
+            "all": {
+              "tp": 1512,
+              "fp": 448,
+              "fn": 377,
+              "background_fp_images": 63,
+              "positive_images_missed": 229
+            }
+          },
+          "calibration_guard": true
+        },
+        {
+          "parameters": {
+            "alpha": 0.25,
+            "overlap": 0.6,
+            "min_score": 0.2
+          },
+          "metrics": {
+            "calibration": {
+              "tp": 908,
+              "fp": 254,
+              "fn": 204,
+              "background_fp_images": 44,
+              "positive_images_missed": 124
+            },
+            "audit": {
+              "tp": 603,
+              "fp": 195,
+              "fn": 174,
+              "background_fp_images": 19,
+              "positive_images_missed": 106
+            },
+            "all": {
+              "tp": 1511,
+              "fp": 449,
+              "fn": 378,
+              "background_fp_images": 63,
+              "positive_images_missed": 230
+            }
+          },
+          "calibration_guard": true
+        },
+        {
+          "parameters": {
+            "alpha": 0.25,
+            "overlap": 0.7,
+            "min_score": 0.1
+          },
+          "metrics": {
+            "calibration": {
+              "tp": 908,
+              "fp": 254,
+              "fn": 204,
+              "background_fp_images": 44,
+              "positive_images_missed": 124
+            },
+            "audit": {
+              "tp": 604,
+              "fp": 194,
+              "fn": 173,
+              "background_fp_images": 19,
+              "positive_images_missed": 105
+            },
+            "all": {
+              "tp": 1512,
+              "fp": 448,
+              "fn": 377,
+              "background_fp_images": 63,
+              "positive_images_missed": 229
+            }
+          },
+          "calibration_guard": true
+        },
+        {
+          "parameters": {
+            "alpha": 0.25,
+            "overlap": 0.7,
+            "min_score": 0.2
+          },
+          "metrics": {
+            "calibration": {
+              "tp": 908,
+              "fp": 254,
+              "fn": 204,
+              "background_fp_images": 44,
+              "positive_images_missed": 124
+            },
+            "audit": {
+              "tp": 604,
+              "fp": 194,
+              "fn": 173,
+              "background_fp_images": 19,
+              "positive_images_missed": 105
+            },
+            "all": {
+              "tp": 1512,
+              "fp": 448,
+              "fn": 377,
+              "background_fp_images": 63,
+              "positive_images_missed": 229
+            }
+          },
+          "calibration_guard": true
+        },
+        {
+          "parameters": {
+            "alpha": 0.5,
+            "overlap": 0.5,
+            "min_score": 0.1
+          },
+          "metrics": {
+            "calibration": {
+              "tp": 907,
+              "fp": 255,
+              "fn": 205,
+              "background_fp_images": 44,
+              "positive_images_missed": 125
+            },
+            "audit": {
+              "tp": 604,
+              "fp": 194,
+              "fn": 173,
+              "background_fp_images": 19,
+              "positive_images_missed": 107
+            },
+            "all": {
+              "tp": 1511,
+              "fp": 449,
+              "fn": 378,
+              "background_fp_images": 63,
+              "positive_images_missed": 232
+            }
+          },
+          "calibration_guard": false
+        },
+        {
+          "parameters": {
+            "alpha": 0.5,
+            "overlap": 0.5,
+            "min_score": 0.2
+          },
+          "metrics": {
+            "calibration": {
+              "tp": 906,
+              "fp": 256,
+              "fn": 206,
+              "background_fp_images": 44,
+              "positive_images_missed": 126
+            },
+            "audit": {
+              "tp": 603,
+              "fp": 195,
+              "fn": 174,
+              "background_fp_images": 19,
+              "positive_images_missed": 107
+            },
+            "all": {
+              "tp": 1509,
+              "fp": 451,
+              "fn": 380,
+              "background_fp_images": 63,
+              "positive_images_missed": 233
+            }
+          },
+          "calibration_guard": false
+        },
+        {
+          "parameters": {
+            "alpha": 0.5,
+            "overlap": 0.6,
+            "min_score": 0.1
+          },
+          "metrics": {
+            "calibration": {
+              "tp": 907,
+              "fp": 255,
+              "fn": 205,
+              "background_fp_images": 44,
+              "positive_images_missed": 125
+            },
+            "audit": {
+              "tp": 603,
+              "fp": 195,
+              "fn": 174,
+              "background_fp_images": 19,
+              "positive_images_missed": 106
+            },
+            "all": {
+              "tp": 1510,
+              "fp": 450,
+              "fn": 379,
+              "background_fp_images": 63,
+              "positive_images_missed": 231
+            }
+          },
+          "calibration_guard": false
+        },
+        {
+          "parameters": {
+            "alpha": 0.5,
+            "overlap": 0.6,
+            "min_score": 0.2
+          },
+          "metrics": {
+            "calibration": {
+              "tp": 906,
+              "fp": 256,
+              "fn": 206,
+              "background_fp_images": 44,
+              "positive_images_missed": 126
+            },
+            "audit": {
+              "tp": 603,
+              "fp": 195,
+              "fn": 174,
+              "background_fp_images": 19,
+              "positive_images_missed": 106
+            },
+            "all": {
+              "tp": 1509,
+              "fp": 451,
+              "fn": 380,
+              "background_fp_images": 63,
+              "positive_images_missed": 232
+            }
+          },
+          "calibration_guard": false
+        },
+        {
+          "parameters": {
+            "alpha": 0.5,
+            "overlap": 0.7,
+            "min_score": 0.1
+          },
+          "metrics": {
+            "calibration": {
+              "tp": 908,
+              "fp": 254,
+              "fn": 204,
+              "background_fp_images": 44,
+              "positive_images_missed": 124
+            },
+            "audit": {
+              "tp": 604,
+              "fp": 194,
+              "fn": 173,
+              "background_fp_images": 19,
+              "positive_images_missed": 105
+            },
+            "all": {
+              "tp": 1512,
+              "fp": 448,
+              "fn": 377,
+              "background_fp_images": 63,
+              "positive_images_missed": 229
+            }
+          },
+          "calibration_guard": true
+        },
+        {
+          "parameters": {
+            "alpha": 0.5,
+            "overlap": 0.7,
+            "min_score": 0.2
+          },
+          "metrics": {
+            "calibration": {
+              "tp": 908,
+              "fp": 254,
+              "fn": 204,
+              "background_fp_images": 44,
+              "positive_images_missed": 124
+            },
+            "audit": {
+              "tp": 604,
+              "fp": 194,
+              "fn": 173,
+              "background_fp_images": 19,
+              "positive_images_missed": 105
+            },
+            "all": {
+              "tp": 1512,
+              "fp": 448,
+              "fn": 377,
+              "background_fp_images": 63,
+              "positive_images_missed": 229
+            }
+          },
+          "calibration_guard": true
+        },
+        {
+          "parameters": {
+            "alpha": 0.75,
+            "overlap": 0.5,
+            "min_score": 0.1
+          },
+          "metrics": {
+            "calibration": {
+              "tp": 905,
+              "fp": 257,
+              "fn": 207,
+              "background_fp_images": 44,
+              "positive_images_missed": 127
+            },
+            "audit": {
+              "tp": 604,
+              "fp": 194,
+              "fn": 173,
+              "background_fp_images": 19,
+              "positive_images_missed": 107
+            },
+            "all": {
+              "tp": 1509,
+              "fp": 451,
+              "fn": 380,
+              "background_fp_images": 63,
+              "positive_images_missed": 234
+            }
+          },
+          "calibration_guard": false
+        },
+        {
+          "parameters": {
+            "alpha": 0.75,
+            "overlap": 0.5,
+            "min_score": 0.2
+          },
+          "metrics": {
+            "calibration": {
+              "tp": 904,
+              "fp": 258,
+              "fn": 208,
+              "background_fp_images": 44,
+              "positive_images_missed": 128
+            },
+            "audit": {
+              "tp": 603,
+              "fp": 195,
+              "fn": 174,
+              "background_fp_images": 19,
+              "positive_images_missed": 107
+            },
+            "all": {
+              "tp": 1507,
+              "fp": 453,
+              "fn": 382,
+              "background_fp_images": 63,
+              "positive_images_missed": 235
+            }
+          },
+          "calibration_guard": false
+        },
+        {
+          "parameters": {
+            "alpha": 0.75,
+            "overlap": 0.6,
+            "min_score": 0.1
+          },
+          "metrics": {
+            "calibration": {
+              "tp": 906,
+              "fp": 256,
+              "fn": 206,
+              "background_fp_images": 44,
+              "positive_images_missed": 126
+            },
+            "audit": {
+              "tp": 603,
+              "fp": 195,
+              "fn": 174,
+              "background_fp_images": 19,
+              "positive_images_missed": 106
+            },
+            "all": {
+              "tp": 1509,
+              "fp": 451,
+              "fn": 380,
+              "background_fp_images": 63,
+              "positive_images_missed": 232
+            }
+          },
+          "calibration_guard": false
+        },
+        {
+          "parameters": {
+            "alpha": 0.75,
+            "overlap": 0.6,
+            "min_score": 0.2
+          },
+          "metrics": {
+            "calibration": {
+              "tp": 905,
+              "fp": 257,
+              "fn": 207,
+              "background_fp_images": 44,
+              "positive_images_missed": 127
+            },
+            "audit": {
+              "tp": 603,
+              "fp": 195,
+              "fn": 174,
+              "background_fp_images": 19,
+              "positive_images_missed": 106
+            },
+            "all": {
+              "tp": 1508,
+              "fp": 452,
+              "fn": 381,
+              "background_fp_images": 63,
+              "positive_images_missed": 233
+            }
+          },
+          "calibration_guard": false
+        },
+        {
+          "parameters": {
+            "alpha": 0.75,
+            "overlap": 0.7,
+            "min_score": 0.1
+          },
+          "metrics": {
+            "calibration": {
+              "tp": 908,
+              "fp": 254,
+              "fn": 204,
+              "background_fp_images": 44,
+              "positive_images_missed": 124
+            },
+            "audit": {
+              "tp": 604,
+              "fp": 194,
+              "fn": 173,
+              "background_fp_images": 19,
+              "positive_images_missed": 105
+            },
+            "all": {
+              "tp": 1512,
+              "fp": 448,
+              "fn": 377,
+              "background_fp_images": 63,
+              "positive_images_missed": 229
+            }
+          },
+          "calibration_guard": true
+        },
+        {
+          "parameters": {
+            "alpha": 0.75,
+            "overlap": 0.7,
+            "min_score": 0.2
+          },
+          "metrics": {
+            "calibration": {
+              "tp": 908,
+              "fp": 254,
+              "fn": 204,
+              "background_fp_images": 44,
+              "positive_images_missed": 124
+            },
+            "audit": {
+              "tp": 604,
+              "fp": 194,
+              "fn": 173,
+              "background_fp_images": 19,
+              "positive_images_missed": 105
+            },
+            "all": {
+              "tp": 1512,
+              "fp": 448,
+              "fn": 377,
+              "background_fp_images": 63,
+              "positive_images_missed": 229
+            }
+          },
+          "calibration_guard": true
+        }
+      ]
+    },
+    "1": {
+      "baseline": {
+        "calibration": {
+          "tp": 936,
+          "fp": 457,
+          "fn": 426,
+          "background_fp_images": 24,
+          "positive_images_missed": 68
+        },
+        "audit": {
+          "tp": 580,
+          "fp": 281,
+          "fn": 212,
+          "background_fp_images": 10,
+          "positive_images_missed": 34
+        },
+        "all": {
+          "tp": 1516,
+          "fp": 738,
+          "fn": 638,
+          "background_fp_images": 34,
+          "positive_images_missed": 102
+        }
+      },
+      "chosen": {
+        "parameters": {
+          "alpha": 0.5,
+          "overlap": 0.5,
+          "min_score": 0.2
+        },
+        "metrics": {
+          "calibration": {
+            "tp": 943,
+            "fp": 450,
+            "fn": 419,
+            "background_fp_images": 24,
+            "positive_images_missed": 67
+          },
+          "audit": {
+            "tp": 583,
+            "fp": 278,
+            "fn": 209,
+            "background_fp_images": 10,
+            "positive_images_missed": 32
+          },
+          "all": {
+            "tp": 1526,
+            "fp": 728,
+            "fn": 628,
+            "background_fp_images": 34,
+            "positive_images_missed": 99
+          }
+        },
+        "calibration_guard": true
+      },
+      "audit_pass": true,
+      "trials": [
+        {
+          "parameters": {
+            "alpha": 0.25,
+            "overlap": 0.5,
+            "min_score": 0.1
+          },
+          "metrics": {
+            "calibration": {
+              "tp": 940,
+              "fp": 453,
+              "fn": 422,
+              "background_fp_images": 24,
+              "positive_images_missed": 68
+            },
+            "audit": {
+              "tp": 581,
+              "fp": 280,
+              "fn": 211,
+              "background_fp_images": 10,
+              "positive_images_missed": 34
+            },
+            "all": {
+              "tp": 1521,
+              "fp": 733,
+              "fn": 633,
+              "background_fp_images": 34,
+              "positive_images_missed": 102
+            }
+          },
+          "calibration_guard": true
+        },
+        {
+          "parameters": {
+            "alpha": 0.25,
+            "overlap": 0.5,
+            "min_score": 0.2
+          },
+          "metrics": {
+            "calibration": {
+              "tp": 940,
+              "fp": 453,
+              "fn": 422,
+              "background_fp_images": 24,
+              "positive_images_missed": 68
+            },
+            "audit": {
+              "tp": 581,
+              "fp": 280,
+              "fn": 211,
+              "background_fp_images": 10,
+              "positive_images_missed": 33
+            },
+            "all": {
+              "tp": 1521,
+              "fp": 733,
+              "fn": 633,
+              "background_fp_images": 34,
+              "positive_images_missed": 101
+            }
+          },
+          "calibration_guard": true
+        },
+        {
+          "parameters": {
+            "alpha": 0.25,
+            "overlap": 0.6,
+            "min_score": 0.1
+          },
+          "metrics": {
+            "calibration": {
+              "tp": 939,
+              "fp": 454,
+              "fn": 423,
+              "background_fp_images": 24,
+              "positive_images_missed": 68
+            },
+            "audit": {
+              "tp": 579,
+              "fp": 282,
+              "fn": 213,
+              "background_fp_images": 10,
+              "positive_images_missed": 35
+            },
+            "all": {
+              "tp": 1518,
+              "fp": 736,
+              "fn": 636,
+              "background_fp_images": 34,
+              "positive_images_missed": 103
+            }
+          },
+          "calibration_guard": true
+        },
+        {
+          "parameters": {
+            "alpha": 0.25,
+            "overlap": 0.6,
+            "min_score": 0.2
+          },
+          "metrics": {
+            "calibration": {
+              "tp": 939,
+              "fp": 454,
+              "fn": 423,
+              "background_fp_images": 24,
+              "positive_images_missed": 68
+            },
+            "audit": {
+              "tp": 580,
+              "fp": 281,
+              "fn": 212,
+              "background_fp_images": 10,
+              "positive_images_missed": 34
+            },
+            "all": {
+              "tp": 1519,
+              "fp": 735,
+              "fn": 635,
+              "background_fp_images": 34,
+              "positive_images_missed": 102
+            }
+          },
+          "calibration_guard": true
+        },
+        {
+          "parameters": {
+            "alpha": 0.25,
+            "overlap": 0.7,
+            "min_score": 0.1
+          },
+          "metrics": {
+            "calibration": {
+              "tp": 936,
+              "fp": 457,
+              "fn": 426,
+              "background_fp_images": 24,
+              "positive_images_missed": 68
+            },
+            "audit": {
+              "tp": 580,
+              "fp": 281,
+              "fn": 212,
+              "background_fp_images": 10,
+              "positive_images_missed": 34
+            },
+            "all": {
+              "tp": 1516,
+              "fp": 738,
+              "fn": 638,
+              "background_fp_images": 34,
+              "positive_images_missed": 102
+            }
+          },
+          "calibration_guard": true
+        },
+        {
+          "parameters": {
+            "alpha": 0.25,
+            "overlap": 0.7,
+            "min_score": 0.2
+          },
+          "metrics": {
+            "calibration": {
+              "tp": 936,
+              "fp": 457,
+              "fn": 426,
+              "background_fp_images": 24,
+              "positive_images_missed": 68
+            },
+            "audit": {
+              "tp": 580,
+              "fp": 281,
+              "fn": 212,
+              "background_fp_images": 10,
+              "positive_images_missed": 34
+            },
+            "all": {
+              "tp": 1516,
+              "fp": 738,
+              "fn": 638,
+              "background_fp_images": 34,
+              "positive_images_missed": 102
+            }
+          },
+          "calibration_guard": true
+        },
+        {
+          "parameters": {
+            "alpha": 0.5,
+            "overlap": 0.5,
+            "min_score": 0.1
+          },
+          "metrics": {
+            "calibration": {
+              "tp": 941,
+              "fp": 452,
+              "fn": 421,
+              "background_fp_images": 24,
+              "positive_images_missed": 68
+            },
+            "audit": {
+              "tp": 584,
+              "fp": 277,
+              "fn": 208,
+              "background_fp_images": 10,
+              "positive_images_missed": 33
+            },
+            "all": {
+              "tp": 1525,
+              "fp": 729,
+              "fn": 629,
+              "background_fp_images": 34,
+              "positive_images_missed": 101
+            }
+          },
+          "calibration_guard": true
+        },
+        {
+          "parameters": {
+            "alpha": 0.5,
+            "overlap": 0.5,
+            "min_score": 0.2
+          },
+          "metrics": {
+            "calibration": {
+              "tp": 943,
+              "fp": 450,
+              "fn": 419,
+              "background_fp_images": 24,
+              "positive_images_missed": 67
+            },
+            "audit": {
+              "tp": 583,
+              "fp": 278,
+              "fn": 209,
+              "background_fp_images": 10,
+              "positive_images_missed": 32
+            },
+            "all": {
+              "tp": 1526,
+              "fp": 728,
+              "fn": 628,
+              "background_fp_images": 34,
+              "positive_images_missed": 99
+            }
+          },
+          "calibration_guard": true
+        },
+        {
+          "parameters": {
+            "alpha": 0.5,
+            "overlap": 0.6,
+            "min_score": 0.1
+          },
+          "metrics": {
+            "calibration": {
+              "tp": 940,
+              "fp": 453,
+              "fn": 422,
+              "background_fp_images": 24,
+              "positive_images_missed": 69
+            },
+            "audit": {
+              "tp": 580,
+              "fp": 281,
+              "fn": 212,
+              "background_fp_images": 10,
+              "positive_images_missed": 35
+            },
+            "all": {
+              "tp": 1520,
+              "fp": 734,
+              "fn": 634,
+              "background_fp_images": 34,
+              "positive_images_missed": 104
+            }
+          },
+          "calibration_guard": false
+        },
+        {
+          "parameters": {
+            "alpha": 0.5,
+            "overlap": 0.6,
+            "min_score": 0.2
+          },
+          "metrics": {
+            "calibration": {
+              "tp": 941,
+              "fp": 452,
+              "fn": 421,
+              "background_fp_images": 24,
+              "positive_images_missed": 68
+            },
+            "audit": {
+              "tp": 580,
+              "fp": 281,
+              "fn": 212,
+              "background_fp_images": 10,
+              "positive_images_missed": 34
+            },
+            "all": {
+              "tp": 1521,
+              "fp": 733,
+              "fn": 633,
+              "background_fp_images": 34,
+              "positive_images_missed": 102
+            }
+          },
+          "calibration_guard": true
+        },
+        {
+          "parameters": {
+            "alpha": 0.5,
+            "overlap": 0.7,
+            "min_score": 0.1
+          },
+          "metrics": {
+            "calibration": {
+              "tp": 936,
+              "fp": 457,
+              "fn": 426,
+              "background_fp_images": 24,
+              "positive_images_missed": 68
+            },
+            "audit": {
+              "tp": 580,
+              "fp": 281,
+              "fn": 212,
+              "background_fp_images": 10,
+              "positive_images_missed": 34
+            },
+            "all": {
+              "tp": 1516,
+              "fp": 738,
+              "fn": 638,
+              "background_fp_images": 34,
+              "positive_images_missed": 102
+            }
+          },
+          "calibration_guard": true
+        },
+        {
+          "parameters": {
+            "alpha": 0.5,
+            "overlap": 0.7,
+            "min_score": 0.2
+          },
+          "metrics": {
+            "calibration": {
+              "tp": 936,
+              "fp": 457,
+              "fn": 426,
+              "background_fp_images": 24,
+              "positive_images_missed": 68
+            },
+            "audit": {
+              "tp": 580,
+              "fp": 281,
+              "fn": 212,
+              "background_fp_images": 10,
+              "positive_images_missed": 34
+            },
+            "all": {
+              "tp": 1516,
+              "fp": 738,
+              "fn": 638,
+              "background_fp_images": 34,
+              "positive_images_missed": 102
+            }
+          },
+          "calibration_guard": true
+        },
+        {
+          "parameters": {
+            "alpha": 0.75,
+            "overlap": 0.5,
+            "min_score": 0.1
+          },
+          "metrics": {
+            "calibration": {
+              "tp": 940,
+              "fp": 453,
+              "fn": 422,
+              "background_fp_images": 24,
+              "positive_images_missed": 68
+            },
+            "audit": {
+              "tp": 582,
+              "fp": 279,
+              "fn": 210,
+              "background_fp_images": 10,
+              "positive_images_missed": 34
+            },
+            "all": {
+              "tp": 1522,
+              "fp": 732,
+              "fn": 632,
+              "background_fp_images": 34,
+              "positive_images_missed": 102
+            }
+          },
+          "calibration_guard": true
+        },
+        {
+          "parameters": {
+            "alpha": 0.75,
+            "overlap": 0.5,
+            "min_score": 0.2
+          },
+          "metrics": {
+            "calibration": {
+              "tp": 943,
+              "fp": 450,
+              "fn": 419,
+              "background_fp_images": 24,
+              "positive_images_missed": 67
+            },
+            "audit": {
+              "tp": 581,
+              "fp": 280,
+              "fn": 211,
+              "background_fp_images": 10,
+              "positive_images_missed": 33
+            },
+            "all": {
+              "tp": 1524,
+              "fp": 730,
+              "fn": 630,
+              "background_fp_images": 34,
+              "positive_images_missed": 100
+            }
+          },
+          "calibration_guard": true
+        },
+        {
+          "parameters": {
+            "alpha": 0.75,
+            "overlap": 0.6,
+            "min_score": 0.1
+          },
+          "metrics": {
+            "calibration": {
+              "tp": 939,
+              "fp": 454,
+              "fn": 423,
+              "background_fp_images": 24,
+              "positive_images_missed": 70
+            },
+            "audit": {
+              "tp": 579,
+              "fp": 282,
+              "fn": 213,
+              "background_fp_images": 10,
+              "positive_images_missed": 36
+            },
+            "all": {
+              "tp": 1518,
+              "fp": 736,
+              "fn": 636,
+              "background_fp_images": 34,
+              "positive_images_missed": 106
+            }
+          },
+          "calibration_guard": false
+        },
+        {
+          "parameters": {
+            "alpha": 0.75,
+            "overlap": 0.6,
+            "min_score": 0.2
+          },
+          "metrics": {
+            "calibration": {
+              "tp": 940,
+              "fp": 453,
+              "fn": 422,
+              "background_fp_images": 24,
+              "positive_images_missed": 69
+            },
+            "audit": {
+              "tp": 579,
+              "fp": 282,
+              "fn": 213,
+              "background_fp_images": 10,
+              "positive_images_missed": 35
+            },
+            "all": {
+              "tp": 1519,
+              "fp": 735,
+              "fn": 635,
+              "background_fp_images": 34,
+              "positive_images_missed": 104
+            }
+          },
+          "calibration_guard": false
+        },
+        {
+          "parameters": {
+            "alpha": 0.75,
+            "overlap": 0.7,
+            "min_score": 0.1
+          },
+          "metrics": {
+            "calibration": {
+              "tp": 936,
+              "fp": 457,
+              "fn": 426,
+              "background_fp_images": 24,
+              "positive_images_missed": 68
+            },
+            "audit": {
+              "tp": 580,
+              "fp": 281,
+              "fn": 212,
+              "background_fp_images": 10,
+              "positive_images_missed": 34
+            },
+            "all": {
+              "tp": 1516,
+              "fp": 738,
+              "fn": 638,
+              "background_fp_images": 34,
+              "positive_images_missed": 102
+            }
+          },
+          "calibration_guard": true
+        },
+        {
+          "parameters": {
+            "alpha": 0.75,
+            "overlap": 0.7,
+            "min_score": 0.2
+          },
+          "metrics": {
+            "calibration": {
+              "tp": 936,
+              "fp": 457,
+              "fn": 426,
+              "background_fp_images": 24,
+              "positive_images_missed": 68
+            },
+            "audit": {
+              "tp": 580,
+              "fp": 281,
+              "fn": 212,
+              "background_fp_images": 10,
+              "positive_images_missed": 34
+            },
+            "all": {
+              "tp": 1516,
+              "fp": 738,
+              "fn": 638,
+              "background_fp_images": 34,
+              "positive_images_missed": 102
+            }
+          },
+          "calibration_guard": true
+        }
+      ]
+    }
+  }
+}

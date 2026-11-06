@@ -50,7 +50,7 @@ export default function NaverMap({point,onPoint,forest=empty,terrain=empty,resul
       observer=new ResizeObserver(()=>{const center=m.getCenter();n.Event.trigger(m,'resize');m.setCenter(center)})
       observer.observe(host.current);setReady(true)
     }).catch(e=>{if(!stopped)setError((e as Error).message)})
-    return()=>{stopped=true;observer?.disconnect();if(handle)sdk.current?.Event.removeListener(handle);map.current?.destroy();map.current=null}
+    return()=>{stopped=true;observer?.disconnect();if(handle)sdk.current?.Event.removeListener(handle)}
     // One SDK map; changing inputs only updates overlays.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
@@ -84,6 +84,10 @@ export default function NaverMap({point,onPoint,forest=empty,terrain=empty,resul
       overlays.push(marker);handles.push(n.Event.addListener(marker,'click',()=>cameraCallback.current?.(c)))}
     return()=>{handles.forEach(h=>n.Event.removeListener(h));overlays.forEach(o=>o.setMap(null))}
   },[ready,forest,terrain,result,minute,point,showForest,showTerrain,bounds,cameras,selectedCamera,showIgnition])
+  // React cleans effects in declaration order. Detach overlays above before
+  // destroying their map; calling setMap(null) on a destroyed SDK map can crash
+  // the whole app when switching ITS/UTIC or leaving the page.
+  useEffect(()=>()=>{try{map.current?.destroy()}catch{/* A disposed SDK must not erase the application. */}finally{map.current=null}},[])
   return <div className="naver-map-wrap"><div className="map-toolbar"><div className="tabs"><button className={base==='hybrid'?'active':''} onClick={()=>setBase('hybrid')}>위성·도로</button><button className={base==='normal'?'active':''} onClick={()=>setBase('normal')}>일반지도</button></div>
     {!!forest.features.length&&<label><input type="checkbox" checked={showForest} onChange={e=>setShowForest(e.target.checked)}/>임상도</label>}
     {!!terrain.features.length&&<label><input type="checkbox" checked={showTerrain} onChange={e=>setShowTerrain(e.target.checked)}/>지형 격자</label>}</div>

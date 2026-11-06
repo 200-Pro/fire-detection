@@ -1,0 +1,18 @@
+{
+  "version": "fire-policy-v2-localization",
+  "model_sha256": "57c133a489976dc2f7341381b12cf160622e0bbaff33aeffdee4926e2093611d",
+  "raw_predict": {"conf": 0.05, "iou": 0.7, "imgsz": 640, "rect": false, "max_det": 300},
+  "filter": {"strong_conf": 0.25, "weak_conf": 0.22, "weak_support": "near_strong_fire", "support_radius": 0.4, "duplicate_iou": 0.45, "smoke_conf": 0.25},
+  "box_refinement": {"class_ids": [1], "alpha": 0.5, "iou_threshold": 0.5, "min_score": 0.2, "score_ratio": 0.5},
+  "validation": {
+    "source": "cached_cpu_640_validation_development_20261031",
+    "images": 3445,
+    "matching_iou": 0.5,
+    "fire_v1": {"tp":1516,"fp":738,"fn":638,"background_fp_images":34,"positive_images_missed":102},
+    "fire_v2": {"tp":1526,"fp":728,"fn":628,"background_fp_images":34,"positive_images_missed":99},
+    "smoke_unchanged": {"tp":1512,"fp":448,"fn":377,"background_fp_images":63},
+    "selection_calibration": {"fire_v1_tp":936,"fire_v2_tp":943},
+    "internal_audit": {"fire_v1_tp":580,"fire_v2_tp":583,"guard_passed":true},
+    "limitations": "Reused validation only; no independent real-CCTV or test-set evaluation; not mAP. Labels, scores, count and per-frame candidate presence unchanged. Smoke refinement rejected after internal audit. No new training."
+  }
+}

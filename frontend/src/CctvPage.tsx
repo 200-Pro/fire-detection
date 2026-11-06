@@ -7,11 +7,19 @@ import NaverMap,{type MapCamera} from './NaverMap'
 import './SpreadPage.css'
 import './ProviderPages.css'
 import MonitoringPanel from './MonitoringPanel'
+import UticPage from './UticPage'
 
 type Item=MapCamera&{road:string;video_type:number}
 type Catalog={items:Item[];fetched_at:number;region:string}
 type Stream={url:string;video_type:number;name:string}
 export default function CctvPage(){
+  const [provider,setProvider]=useState<'its'|'utic'>('its')
+  return <div><div className="button-row" style={{marginBottom:16}} role="group" aria-label="CCTV 제공기관">
+    <button className={`button ${provider==='its'?'primary':''}`} aria-pressed={provider==='its'} onClick={()=>setProvider('its')}>ITS 고속도로·국도</button>
+    <button className={`button ${provider==='utic'?'primary':''}`} aria-pressed={provider==='utic'} onClick={()=>setProvider('utic')}>UTIC 대구 도시 CCTV</button>
+  </div>{provider==='utic'?<UticPage/>:<ItsCctvPage/>}</div>
+}
+function ItsCctvPage(){
   const [catalog,setCatalog]=useState<Catalog|null>(null),[selected,setSelected]=useState<Item|null>(null),[stream,setStream]=useState<Stream|null>(null)
   const [road,setRoad]=useState('ex'),[videoType,setVideoType]=useState(4),[search,setSearch]=useState(''),[busy,setBusy]=useState(false)
   const [error,setError]=useState(''),[playerMessage,setPlayerMessage]=useState(''),[consent,setConsent]=useState(false),[running,setRunning]=useState(false)
@@ -71,7 +79,7 @@ export default function CctvPage(){
     setRunning(true);void tick()
   }
   const items=catalog?.items.filter(c=>c.name.toLowerCase().includes(search.toLowerCase()))||[]
-  return <div><div className="notice info">출처: 국토교통부 국가교통정보센터(ITS). 고속도로·국도 CCTV · 대구 주변 선택 조회. UTIC는 신청 완료 · 승인 대기 · 아직 미연결입니다. 설치 좌표는 실제 발화 위치가 아닙니다.</div>
+  return <div><div className="notice info">출처: 국토교통부 국가교통정보센터(ITS). 고속도로·국도 CCTV · 대구 주변 선택 조회. UTIC 대구 목록·단일 재생 시험은 위 UTIC 탭에서 확인하세요. UTIC 상시 AI 분석은 아직 미활성입니다. 설치 좌표는 실제 발화 위치가 아닙니다.</div>
     {error&&<div className="notice error" role="alert">{error}</div>}
     <div className="cctv-layout"><section className="panel"><div className="section-heading"><h2>공공 CCTV 찾기</h2><Badge>ITS</Badge></div><div className="cctv-filter">
       <label>도로 종류<select value={road} onChange={e=>{stop();selection.current++;setBusy(false);setRoad(e.target.value);setCatalog(null);setSelected(null);setStream(null)}}><option value="ex">고속도로</option><option value="its">국도</option></select></label>

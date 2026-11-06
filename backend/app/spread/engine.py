@@ -11,7 +11,7 @@ from shapely.geometry import shape, mapping
 from shapely.ops import transform as transform_geometry
 from .terrain import load_manifest, digest_file
 
-ENGINE_VERSION = "research-ca-v1.2-provenance"
+ENGINE_VERSION = "research-ca-v1.3-sparse-equivalent"
 
 
 def neighbour_slices(rows, cols, dr, dc):
@@ -34,6 +34,7 @@ def cellular_automata(elevation, fuel, valid, ignition, weather, horizons, runs=
     moisture *= np.exp(-min(weather["rain_mm"], 10) * .35)
     wind_to = (weather["wind_from_deg"] + 180) % 360
     transitions = []
+    flat_cells = np.arange(rows * cols).reshape(rows, cols)
     for dr in (-1, 0, 1):
         for dc in (-1, 0, 1):
             if dr == dc == 0:
@@ -46,13 +47,24 @@ def cellular_automata(elevation, fuel, valid, ignition, weather, horizons, runs=
             hazard = ros * fuel[destination] * moisture * wind_factor * np.exp(2.5 * slope) / distance
             probability = np.clip(1 - np.exp(-hazard * dt), 0, .70)
             probability = np.where(valid[source] & valid[destination], probability, 0)
-            transitions.append((source, destination, probability))
+            edge_mask = probability > 0
+            # Sparse forest coverage: do not calculate zero-hazard edges.
+            # Dense grids retain the original vectorized slicing path.
+            if np.count_nonzero(edge_mask) < .45 * probability.size:
+                transitions.append((None, flat_cells[source][edge_mask], flat_cells[destination][edge_mask], probability[edge_mask]))
+            else:
+                transitions.append((source, destination, None, probability))
     checkpoints = {int(round(h / dt)): h for h in horizons}
     for step in range(1, max(checkpoints) + 1):
         active = (age >= 0) & (age < duration_steps)
         survival = np.ones(age.shape, dtype="float32")
-        for source, destination, probability in transitions:
-            survival[(slice(None),) + destination] *= 1 - active[(slice(None),) + source] * probability
+        for source, destination, sparse_destination, probability in transitions:
+            if source is None:
+                flat_survival = survival.reshape(runs, -1)
+                flat_active = active.reshape(runs, -1)
+                flat_survival[:, sparse_destination] *= 1 - flat_active[:, destination] * probability
+            else:
+                survival[(slice(None),) + destination] *= 1 - active[(slice(None),) + source] * probability
         ignite = (age < 0) & valid[None, ...] & (rng.random(age.shape) < (1 - survival))
         age[age >= 0] += 1
         age[ignite] = 0
