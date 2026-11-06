@@ -1,5 +1,7 @@
 # Ember — 산불·불꽃 후보 모니터링
 
+새 PC로 옮길 때는 [설치·별도 전달 파일 안내](docs/GITHUB_SETUP.md)와 [이전 검증 범위](docs/NEW_PC_20261106.md)를 확인하세요. `scripts/check-local.py`로 모델·정책·GIS·필수 설정 누락을 검사합니다.
+
 ## 2026-10-31 성능 점검·개선
 
 [최신 점검·개선 기록](docs/PERFORMANCE_20261031.md)을 먼저 확인하세요. 기본 후처리는 `fire_policy_v2.json`이며 `best.pt`는 기존 70epoch 모델을 유지합니다. 이전 v1 정책은 rollback용으로 보존했습니다. 불꽃 박스 위치 보정의 validation 개선과 결과 동등 확산 계산 가속을 적용했으며 실제 CCTV 사건 탐지율·실산불 확산 정확도 개선을 주장하지 않습니다. UTIC는 단일 재생·프레임 연결 시험 단계이며 상시 AI·증거 저장은 OFF입니다. 지도 SDK 실화면 오류는 해결 완료로 표시하지 않습니다.

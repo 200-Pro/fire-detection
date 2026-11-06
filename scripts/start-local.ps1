@@ -10,6 +10,8 @@ function Test-Port([string]$Address, [int]$Port) {
     try { $socket = [System.Net.Sockets.TcpClient]::new($Address, $Port); $socket.Dispose(); return $true } catch { return $false }
 }
 if (-not (Test-Path -LiteralPath $pythonPath) -or -not (Test-Path -LiteralPath $vitePath)) { throw 'Run scripts\setup-local.ps1 first.' }
+& $pythonPath (Join-Path $PSScriptRoot 'check-local.py')
+if ($LASTEXITCODE -ne 0) { throw 'New-PC preflight failed. Prepare .env, the matching model, and demo samples or disable demo. See docs\GITHUB_SETUP.md.' }
 if ((Test-Port '127.0.0.1' 8000) -or (Test-Port '127.0.0.1' 5173)) { throw 'Port 8000 or 5173 is already used. Stop the previous instance first.' }
 if ($LanAddress) {
     $ip = $null

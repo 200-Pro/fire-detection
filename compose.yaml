@@ -21,7 +21,7 @@ services:
       EMBER_SECURE_COOKIE: ${EMBER_SECURE_COOKIE:-false}
       EMBER_DEMO_ENABLED: ${EMBER_DEMO_ENABLED:-true}
       EMBER_MODEL_PATH: /service/models/best.pt
-      EMBER_POLICY_PATH: /service/models/fire_policy_v1.json
+      EMBER_POLICY_PATH: /service/models/fire_policy_v2.json
       EMBER_STORAGE_PATH: /service/runtime/evidence
       EMBER_SPREAD_DATA_PATH: /service/runtime/spread-data
       EMBER_SPREAD_JOBS_PATH: /service/runtime/spread-jobs
@@ -30,12 +30,16 @@ services:
       NAVER_MAPS_CLIENT_ID: ${NAVER_MAPS_CLIENT_ID:-}
       NAVER_MAPS_CLIENT_SECRET: ${NAVER_MAPS_CLIENT_SECRET:-}
       ITS_API_KEY: ${ITS_API_KEY:-}
+      UTIC_API_KEY: ${UTIC_API_KEY:-}
+      UTIC_CATALOG_PATH: /service/runtime/external-data/cctv/OpenDataCCTV.xlsx
       EMBER_CCTV_AI_APPROVED: ${EMBER_CCTV_AI_APPROVED:-false}
       EMBER_STREAM_ALLOWED_HOSTS: ${EMBER_STREAM_ALLOWED_HOSTS:-}
       EMBER_MONITOR_CAPACITY: ${EMBER_MONITOR_CAPACITY:-4}
     volumes:
       - "./models/best.pt:/service/models/best.pt:ro"
       - "./models/fire_policy_v1.json:/service/models/fire_policy_v1.json:ro"
+      - "./models/fire_policy_v2.json:/service/models/fire_policy_v2.json:ro"
+      - "./runtime/external-data/cctv:/service/runtime/external-data/cctv:ro"
       - "evidence-data:/service/runtime"
       - "./runtime/spread-data:/service/runtime/spread-data:ro"
       - "spread-jobs:/service/runtime/spread-jobs"

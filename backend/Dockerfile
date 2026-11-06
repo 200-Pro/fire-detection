@@ -6,7 +6,7 @@ COPY backend/requirements.txt /service/backend/requirements.txt
 RUN pip install torch==2.14.0 torchvision==0.29.0 --index-url https://download.pytorch.org/whl/cpu && pip install -r /service/backend/requirements.txt
 RUN useradd --create-home --uid 10001 ember && mkdir -p /service/runtime/spread-jobs && chown -R ember:ember /service/runtime
 COPY --chown=ember:ember backend /service/backend
-COPY --chown=ember:ember models/fire_policy_v1.json /service/models/fire_policy_v1.json
+COPY --chown=ember:ember models/fire_policy_v*.json /service/models/
 COPY --chown=ember:ember samples /service/samples
 USER ember
 WORKDIR /service/backend
